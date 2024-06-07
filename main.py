@@ -1,5 +1,6 @@
 import dwdpollen, datetime, openpyxl, os, json, time, schedule
 from openpyxl import Workbook
+from openpyxl.styles import Alignment
 
 api = dwdpollen.DwdPollenApi()
 
@@ -49,7 +50,7 @@ def schreibe_in_excel(pollenList, ws, wb):
     ws.cell(row=stratRow, column=2, value="")
 
     for col_num, pollentyp in enumerate(pollenList, start=4):
-        ws.cell(row=stratRow, column=col_num, value=pollentyp.severity)
+        ws.cell(row=stratRow, column=col_num, value=pollentyp.severity).alignment = Alignment(horizontal='center', vertical='center')
         
     wb.save(filename)
 
@@ -58,13 +59,14 @@ def run_script():
 
         wb = openpyxl.load_workbook(filename)
         ws = wb.active
-            
+        writeAllowed = True
         for row in ws.iter_rows(min_row=2, max_col=1, values_only=True):
             if row[0] == today:
                 print("Entry for today exists. Skipping execution")
-            else:
-                pollenList = getPollenList()
-                schreibe_in_excel(pollenList, ws, wb)
+                writeAllowed = False
+        if writeAllowed == True:
+            pollenList = getPollenList()
+            schreibe_in_excel(pollenList, ws, wb)
     else:
         wb = Workbook()
         ws = wb.active
