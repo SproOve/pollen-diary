@@ -1,6 +1,7 @@
 import dwdpollen, datetime, openpyxl, os, json, time, schedule
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
+from openpyxl.styles import NamedStyle
 
 api = dwdpollen.DwdPollenApi()
 
@@ -46,7 +47,7 @@ def schreibe_in_excel(pollenList, ws, wb):
 
     stratRow = ws.max_row + 1
         
-    ws.cell(row=stratRow, column=1, value=today)
+    ws.cell(row=stratRow, column=1, value=today).number_format = 'yyyy-mm-dd;@'
     ws.cell(row=stratRow, column=2, value="")
 
     for col_num, pollentyp in enumerate(pollenList, start=4):
